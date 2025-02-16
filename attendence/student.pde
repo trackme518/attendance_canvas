@@ -65,7 +65,7 @@ class Student {
 
     textSize(14);
     fill(255);
-    text(name, x+30, y);
+    text(name, x+25, y);
     popStyle();
   }
 

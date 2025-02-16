@@ -1,72 +1,249 @@
 // Global variables
 
-ArrayList<Button>buttons = new ArrayList<Button>();
-ArrayList<TextInputField>textInputFields = new ArrayList<TextInputField>();
+
 PFont font;
 PFont largefont;
 
-boolean ctrlPressed = false;  // To track if CTRL is pressed
-boolean vPressed = false;
+//GuiGroup loginTab;
+Gui gui;
+
+boolean settingsVisible = true;
 
 void initGUI() {
+  gui = new Gui();
 
   font = createFont(dataPath("Roboto-Regular.ttf"), 14);
   largefont = createFont(dataPath("Roboto-Regular.ttf"), 36);
   textFont(font);
+
+  GuiGroup loginTab = gui.addGroup("login");
+
+  if (userdataloaded) { //valid user data were loaded
+    loginTab.hide();
+    settingsVisible = false;
+  }
+
   // Create the text input field with a label
-  textInputFields.add( new TextInputField(30, height-50, 200, 30, "USERNAME", user) );
+  TextInputField usernameField = new TextInputField(30, 100, 200, 30, "USERNAME", user);
+  loginTab.add( usernameField );
 
-  TextInputField passwdField = new TextInputField(260, height-50, 200, 30, "PASSWORD", pass);
+  TextInputField passwdField = new TextInputField(260, 100, 200, 30, "PASSWORD", pass);
   passwdField.hidden = true;
+  loginTab.add( passwdField );
 
-  textInputFields.add( passwdField );
-  textInputFields.add( new TextInputField(30, height-50-60, 200, 30, "ATTENDENCE URL", weburl) );
+  TextInputField urlField = new TextInputField(30, 160, 200, 30, "ATTENDENCE URL", weburl);
+  loginTab.add( urlField );
 
   // Create the button with an associated method using an anonymous function (lambda-style)
-  buttons.add( new Button(260, height-50-60, 60, 30, "Save", new ButtonAction() {
+  Button saveButton  = new Button(260, 160, 60, 30, "Save", new ButtonAction() {
     public void onClick() {
       saveToJson();
     }
   }
-  ));
+  );
+  loginTab.add( saveButton);
 
-  buttons.add( new Button(340, height-50-60, 60, 30, "Login", new ButtonAction() {
+  Button loginButton  =  new Button(340, 160, 60, 30, "Login", new ButtonAction() {
     public void onClick() {
       startBrowser();
     }
   }
-  ));
-}
+  );
+  loginTab.add( loginButton);
 
-TextInputField getTextInputFieldByLabel(String label) {
-  for (int i=0; i< textInputFields.size(); i++ ) {
-    if ( textInputFields.get(i).label.equals(label) ) {
-      return textInputFields.get(i);
+
+  Button toggleGuiButton  =  new Button(30, 30, 60, 30, "Settings", new ButtonAction() {
+    public void onClick() {
+      loginTab.toggle();
+      settingsVisible = !settingsVisible; //assign to global var as well
     }
   }
-  return null;
+  );
+  gui.add( toggleGuiButton );
 }
 
-String getInputTextByLabel(String label) {
-  TextInputField field = getTextInputFieldByLabel(label);
-  if (field !=null) {
-    return field.inputText;
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// GUI MAIN CLASS
+public class Gui {
+  ArrayList<GuiGroup> guiGroups = new ArrayList<GuiGroup>();
+
+  Gui() {
+    GuiGroup defaultGroup = new GuiGroup("default");
+    guiGroups.add(defaultGroup);
   }
-  return null;
+
+  void render() {
+    // Display the text input field and button
+    for (int i=0; i< guiGroups.size(); i++ ) {
+      guiGroups.get(i).render();
+    }
+  }
+
+  void mousePressed() {
+    for (int i=0; i< guiGroups.size(); i++ ) {
+      guiGroups.get(i).mousePressed();
+    }
+  }
+
+  void keyPressed(char key) {
+    for (int i=0; i< guiGroups.size(); i++ ) {
+      guiGroups.get(i).keyPressed(key);
+    }
+  }
+
+  GuiGroup addGroup(String name) {
+    GuiGroup group = new GuiGroup(name);
+    guiGroups.add(group);
+    return group;
+  }
+
+  void add(GuiGroup group) {
+    guiGroups.add(group);
+  }
+
+  void add(Button button) {
+    getGroup("default").add(button);
+  }
+
+  void add(TextInputField field) {
+    getGroup("default").add(field);
+  }
+
+  TextInputField getTextInputFieldByLabel(String label) {
+    for (int i=0; i< guiGroups.size(); i++ ) {
+      TextInputField currField = guiGroups.get(i).getTextInputFieldByLabel(label);
+      if ( currField != null ) {
+        return currField;
+      }
+    }
+    return null;
+  }
+
+  String getInputTextByLabel(String label) {
+    TextInputField field = getTextInputFieldByLabel(label);
+    if (field !=null) {
+      return field.getText();
+    }
+    return null;
+  }
+
+  GuiGroup getGroup(String name) {
+    for (int i=0; i< guiGroups.size(); i++ ) {
+      if (guiGroups.get(i).name.equals(name)) {
+        return guiGroups.get(i);
+      }
+    }
+    return null;
+  }
+
+  TextInputField getSelectedTextField() {
+    for (int i=0; i< guiGroups.size(); i++ ) {
+      TextInputField field = guiGroups.get(i).getSelectedTextField();
+      if (field!=null) {
+        return field;
+      }
+    }
+    return null;
+  }
 }
 
-void renderGUI() {
-  // Display the text input field and button
-  for (int i=0; i< buttons.size(); i++ ) {
-    buttons.get(i).display();
+//---------------------------------------------------------------------------
+public class GuiGroup {
+  String name;
+  boolean visible = true;
+
+  ArrayList<Button>buttons = new ArrayList<Button>();
+  ArrayList<TextInputField>textInputFields = new ArrayList<TextInputField>();
+
+  GuiGroup(String name) {
+    this.name = name;
   }
-  for (int i=0; i< textInputFields.size(); i++ ) {
-    textInputFields.get(i).display();
+
+  void render() {
+    if (visible) {
+      for (int i=0; i< buttons.size(); i++ ) {
+        buttons.get(i).display();
+      }
+      for (int i=0; i< textInputFields.size(); i++ ) {
+        textInputFields.get(i).display();
+      }
+    }
+  }
+
+  void mousePressed() {
+    if (visible) {
+      for (int i=0; i< buttons.size(); i++ ) {
+        buttons.get(i).mousePressed();
+      }
+      for (int i=0; i< textInputFields.size(); i++ ) {
+        textInputFields.get(i).mousePressed();
+      }
+    }
+  }
+
+  void keyPressed(char key) {
+    if (visible) {
+      for (int i=0; i< textInputFields.size(); i++ ) {
+        textInputFields.get(i).keyPressed(key);
+      }
+    }
+  }
+
+  TextInputField getTextInputFieldByLabel(String label) {
+    for (int i=0; i< textInputFields.size(); i++ ) {
+      if ( textInputFields.get(i).label.equals(label) ) {
+        return textInputFields.get(i);
+      }
+    }
+    return null;
+  }
+
+  Button getButtonByLabel(String label) {
+    for (int i=0; i< buttons.size(); i++ ) {
+      if ( buttons.get(i).label.equals(label) ) {
+        return buttons.get(i);
+      }
+    }
+    return null;
+  }
+
+  TextInputField getSelectedTextField() {
+    for (int i=0; i< textInputFields.size(); i++ ) {
+      if ( textInputFields.get(i).selected ) {
+        return textInputFields.get(i);
+      }
+    }
+    return null;
+  }
+
+  void show() {
+    visible = true;
+  }
+
+  void hide() {
+    visible = false;
+  }
+
+  boolean isVisible() {
+    return visible;
+  }
+
+  void toggle() {
+    visible = !visible;
+  }
+
+  void add(TextInputField field) {
+    textInputFields.add(field);
+  }
+
+  void add(Button button) {
+    buttons.add(button);
   }
 }
 
+//------------------------------------------------------------------------------------------
 // TextInputField class for the text field and label
-class TextInputField {
+public class TextInputField {
   float x, y, width, height;
   String label;
   String inputText = "";
@@ -92,10 +269,18 @@ class TextInputField {
     this.label = label;
   }
 
+  String getText() {
+    return inputText;
+  }
+
+  void setText(String text) {
+    inputText = text;
+  }
+
   void display() {
     pushStyle();
     textSize(14);
-    
+
     textAlign(LEFT);
     // Draw label
     fill(255);
@@ -116,14 +301,12 @@ class TextInputField {
       fill(255);
     }
 
-
-
     if (!hidden) {
       text(inputText, x + 5, y+7, width-5, height);
     } else {
       //password - display asterisk instead of the original text
       String hiddenString = "";
-      while (hiddenString.length()< inputText.length()) {
+      for (int i=0; i<inputText.length(); i++) {
         hiddenString += "*";
       }
       text(hiddenString, x + 5, y+7, width-5, height);
@@ -152,19 +335,10 @@ class TextInputField {
       inputText = inputText.substring(0, inputText.length() - 1);
     }
   }
-
-  String getText() {
-    return inputText;
-  }
 }
-
-// ButtonAction interface to define the onClick behavior
-interface ButtonAction {
-  void onClick();
-}
-
+//------------------------------------------------------------------------------------------
 // Button class for creating a button with a label and associated method
-class Button {
+public class Button {
   float x, y, width, height;
   String label;
   ButtonAction action;  // ButtonAction interface to store the action
@@ -182,7 +356,7 @@ class Button {
   void display() {
     pushStyle();
     textSize(14);
-    
+
     if (millis()-clicked<333) {
       fill(255, 253, 138);
     } else {
@@ -207,19 +381,23 @@ class Button {
     }
   }
 }
+//--------------------------------------------------------------------------------------------
+
+
+
+// ButtonAction interface to define the onClick behavior
+interface ButtonAction {
+  void onClick();
+}
+
 
 //////////////////////////////////////////////////////
 //user input actions
 
 void mousePressed() {
-  for (int i=0; i< buttons.size(); i++ ) {
-    buttons.get(i).mousePressed();
+  if (gui!=null) {
+    gui.mousePressed();
   }
-
-  for (int i=0; i< textInputFields.size(); i++ ) {
-    textInputFields.get(i).mousePressed();
-  }
-  //myButton.mousePressed();  // Check if the button was clicked
 }
 
 
@@ -227,42 +405,52 @@ void keyPressed() {
 
   if (key == CODED) {
     if (keyCode == 86 ) { //CTRL + V
-      println("CTRL+V");
+      println("CTRL+V detected");
       String clipboard = getClipboard();
-      println(clipboard);
-      for (int i=0; i< textInputFields.size(); i++ ) {
-        if ( textInputFields.get(i).selected) {
-          textInputFields.get(i).inputText = clipboard;
-        }
+      //println(clipboard);
+
+      TextInputField selectedField = gui.getSelectedTextField();
+      if (selectedField!=null) {
+        selectedField.setText(clipboard);
       }
     }
     return;
   }
 
-
-  for (int i=0; i< textInputFields.size(); i++ ) {
-    textInputFields.get(i).keyPressed(key);
+  if (gui!=null) {
+    gui.keyPressed(key);
   }
 }
 ///////////////////////////////////////////////////////
 
-// Function to save data to a JSON file
-void saveToJson() {
-  String _user = getInputTextByLabel("USERNAME");
-  String _pass =  encrypter( getInputTextByLabel("PASSWORD"), cryptoPass );
-  String _url = getInputTextByLabel("ATTENDENCE URL");
-
+boolean setUserData() {
+  String _user = gui.getInputTextByLabel("USERNAME");
+  String _pass =  gui.getInputTextByLabel("PASSWORD");
+  String _url = gui.getInputTextByLabel("ATTENDENCE URL");
   if (_user==null || _pass==null || _url==null) {
-    return;
+    println("input fields are null - returning");
+    return false;
   }
-
-  // Create a JSONObject
+  if (_user.isEmpty() || _pass.isEmpty() || _url.isEmpty()) {
+    println("input fields are empty - returning");
+    return false;
+  }
   user = _user;
   pass = _pass;
   weburl = _url;
+  return true;
+}
+
+// Function to save data to a JSON file
+void saveToJson() {
+
+  if ( !setUserData() ) {
+    return;
+  }
+
   JSONObject json = new JSONObject();
   json.setString("username", user);
-  json.setString("password", pass);
+  json.setString("password", encrypter( pass, cryptoPass ) );
   json.setString("weburl", weburl);
   // Save the JSONObject as a file
   saveJSONObject(json, dataPath("data.json") );
@@ -282,7 +470,7 @@ boolean loadFromJson() {
     // Load the JSON file
     JSONObject json = loadJSONObject(dataPath("data.json"));
     user = json.getString("username");
-    pass = decrypter( json.getString("password") , cryptoPass) ;
+    pass = decrypter( json.getString("password"), cryptoPass) ;
     weburl = json.getString("weburl");
     return true;
   }

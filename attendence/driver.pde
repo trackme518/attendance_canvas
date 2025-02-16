@@ -214,8 +214,9 @@ public class BrowserInstance implements Runnable {
       }
 
       isRunning = false; // Signal the thread to stop
-
-      thread.join(); // Wait for the thread to finish
+      if (thread != null) { 
+        thread.join(); // Wait for the thread to finish
+      }
     }
     catch (InterruptedException e) {
       Thread.currentThread().interrupt();
