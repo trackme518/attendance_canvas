@@ -2,6 +2,7 @@
 # attendence_canvas/data/ungoogled-chromium_133.0.6943.53-1.AppImage
 # ignore all AppImage
 *.AppImage
+*.app
 *.dmg
 *.exe
 *.7z

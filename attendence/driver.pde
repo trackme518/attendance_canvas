@@ -45,20 +45,20 @@ public class BrowserInstance implements Runnable {
   //@BeforeMethod
 
   BrowserInstance(String _path_to_driver, String _chrome_binary_path ) {
-/*
+    /*
     try {
-      //kill previous instances
-      //executeCommand("killall chromedriver");
-      //executeCommand("killall chrome");
-      //macos
-      executeCommand("pkill -TERM -U $(id -u) -f \"chromedriver\"");
-      executeCommand("pkill -TERM -U $(id -u) -f \"chrome\"");
-      //pkill -TERM -U $(id -u) -f "ProcessName"
-    }
-    catch (Exception e) {
-      println(e);
-    }
-    */
+     //kill previous instances
+     //executeCommand("killall chromedriver");
+     //executeCommand("killall chrome");
+     //macos
+     executeCommand("pkill -TERM -U $(id -u) -f \"chromedriver\"");
+     executeCommand("pkill -TERM -U $(id -u) -f \"chrome\"");
+     //pkill -TERM -U $(id -u) -f "ProcessName"
+     }
+     catch (Exception e) {
+     println(e);
+     }
+     */
 
     path_to_driver = _path_to_driver;
     chrome_binary_path = _chrome_binary_path;
@@ -188,20 +188,26 @@ public class BrowserInstance implements Runnable {
   }
 
   public void start( String _path_to_driver, String _chrome_binary_path ) {
-    //String currOS = System.getProperty("os.name");
+    int currOS = getOS();
 
     Map<String, Object> prefs = new HashMap<String, Object>(); //Create a map to store  preferences
     ChromeOptions options = new ChromeOptions(); //Create an instance of ChromeOptions
 
-    options.setBinary(_chrome_binary_path); //path to chrome executable
-
-    System.setProperty("webdriver.chrome.driver", _path_to_driver );
-    prefs.put("profile.default_content_setting_values.notifications", 2); //Pass the argument 1 to allow and 2 to block notifications
-    options.setExperimentalOption("prefs", prefs); // set ExperimentalOption - prefs
-    options.addArguments("headless"); //run headless
+    if (currOS==0) { //MACOS - I am getting permission denied when trying to start from chromedriver so lets start on separate thread
+      //String[] args = {"--no-sandbox", "--remote-debugging-port=9222", "--headless"};
+      executeCommand( "open "+_chrome_binary_path+" --remote-debugging-port=8223 --no-sandbox");
+      //executeCommand( "open "+_chrome_binary_path+" --remote-debugging-port=9222 --no-sandbox");
+      options.addArguments("remote-debugging-port=8223");
+      options.addArguments("headless");
+    } else {
+      options.setBinary(_chrome_binary_path); //path to chrome executable
+      options.addArguments("headless"); //run headless
+      options.addArguments("--no-sandbox");
+      prefs.put("profile.default_content_setting_values.notifications", 2); //Pass the argument 1 to allow and 2 to block notifications
+      options.setExperimentalOption("prefs", prefs); // set ExperimentalOption - prefs
+    }
     
-    options.addArguments("--no-sandbox"); 
-
+    System.setProperty("webdriver.chrome.driver", _path_to_driver );
     driver=new ChromeDriver(options); //use options to switch off notifications
 
     //driver.manage().window().setPosition(new Point(-2000, 0)); //move outside visible area
@@ -214,7 +220,7 @@ public class BrowserInstance implements Runnable {
       }
 
       isRunning = false; // Signal the thread to stop
-      if (thread != null) { 
+      if (thread != null) {
         thread.join(); // Wait for the thread to finish
       }
     }

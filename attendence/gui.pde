@@ -9,6 +9,8 @@ Gui gui;
 
 boolean settingsVisible = true;
 
+int lastKey = -1;
+
 void initGUI() {
   gui = new Gui();
 
@@ -400,20 +402,41 @@ void mousePressed() {
   }
 }
 
+void pasteToField() {
+  String clipboard = getClipboard();
+  //println(clipboard);
+  TextInputField selectedField = gui.getSelectedTextField();
+  if (selectedField!=null) {
+    selectedField.setText(clipboard);
+  }
+}
 
 void keyPressed() {
+  //println("code: " + (int)key);
 
-  if (key == CODED) {
-    if (keyCode == 86 ) { //CTRL + V
-      println("CTRL+V detected");
-      String clipboard = getClipboard();
-      //println(clipboard);
+  int currOS = getOS();
 
-      TextInputField selectedField = gui.getSelectedTextField();
-      if (selectedField!=null) {
-        selectedField.setText(clipboard);
+  if (currOS==0) { //MACOS
+    if (lastKey==(int)65535) {
+      if (key==118) {
+        pasteToField();
+        return;
       }
     }
+  } else if (currOS==2 || currOS==1) { //LINUX OR WIN
+    if (key == CODED) {
+      if (keyCode == 86 ) { //CTRL + V
+        println("coded: " + (int)keyCode);
+        println("CTRL+V detected");
+        pasteToField();
+        return;
+      }
+    }
+  }
+
+  lastKey = key;
+
+  if (key ==CODED) {
     return;
   }
 
