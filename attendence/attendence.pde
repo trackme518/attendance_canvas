@@ -190,9 +190,8 @@ void startBrowser() {
     if (arch.contains("aarch64") || arch.contains("arm64")) {
       println("Running on MACOS Apple Silicon (ARM64)");
       browser_build_dir = dataPath("chromedriver"+File.separator+"macos_silicon");
-      //chrome_binary_path = browser_build_dir+File.separator+"chrome.app";
-      chrome_binary_path = "/Applications"+File.separator+"Chromium.app";
-      //chrome_binary_path = "/Applications"+File.separator+"chrome.app";
+      chrome_binary_path = browser_build_dir+File.separator+"Chromium.app";
+      //chrome_binary_path = "/Applications"+File.separator+"Chromium.app";
     } else {
       println("Running on MACOS Intel (x86_64)");
       browser_build_dir = dataPath("chromedriver"+File.separator+"macos_intel");
