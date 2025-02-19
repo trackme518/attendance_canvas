@@ -188,7 +188,6 @@ public class BrowserInstance implements Runnable {
   }
 
   public void start( String _path_to_driver, String _chrome_binary_path ) {
-    int currOS = getOS();
 
     Map<String, Object> prefs = new HashMap<String, Object>(); //Create a map to store  preferences
     ChromeOptions options = new ChromeOptions(); //Create an instance of ChromeOptions

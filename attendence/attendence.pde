@@ -32,10 +32,14 @@ int timeoutForAttendance = 60; //1 hour timeout
 int timeoutForLateAttendance = 15;
 boolean presenceClosed = false;
 boolean presenceLate = false;
+
+int currOS = 0;//global var for operating system flavor
 /////////////////////////////////////////////////////
 
 void setup() {
   size(1280, 720);
+  currOS = getOS();
+  
   windowTitle("Canvas Attendence");
   windowResizable(true);
   windowMove(60, 60);
@@ -209,7 +213,6 @@ void startBrowser() {
     }
   }
 
-  int currOS = getOS();
   String browser_build_dir = "";
   String chrome_binary_path = "";
 

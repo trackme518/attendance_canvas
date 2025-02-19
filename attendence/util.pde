@@ -48,11 +48,11 @@ int getOS() {
 
 //----------------------
 String getIPAddress() {
-  int os = getOS();
+  //int currOS = getOS();
   String command;
 
   // Choose the correct command based on OS
-  switch (os) {
+  switch (currOS) {
   case 0:  // macOS
     command = "ipconfig getifaddr en0"; //ipconfig getifaddr en1 for wifi en0 for wired, but if no wired then just en0...for wifi ok
     break;
@@ -74,12 +74,12 @@ String executeCommand(String command) {
   if (command==null) {
     return null;
   }
-  int os = getOS();
+  //int os = getOS();
   try {
     ProcessBuilder builder;
-    if (os == 1) { // Windows requires PowerShell execution
+    if (currOS == 1) { // Windows requires PowerShell execution
       builder = new ProcessBuilder("cmd.exe", "/c", command);
-    } else if (os == 0) { // macOS
+    } else if (currOS == 0) { // macOS
       //builder = new ProcessBuilder(command);
       builder = new ProcessBuilder("/bin/bash", "-c", command);
     } else {
@@ -106,26 +106,26 @@ String executeCommand(String command) {
 }
 
 String parseIPAddress(String output) {
-  int os = getOS();
+  //int os = getOS();
   if (output == null || output.isEmpty()) {
     return null;
   }
 
-  if (os == 2) { // Linux: Extract "src" IP
+  if (currOS == 2) { // Linux: Extract "src" IP
     String[] words = output.split("\\s+");
     for (int i = 0; i < words.length - 1; i++) {
       if (words[i].equals("src")) {
         return words[i + 1]; // Return the IP after "src"
       }
     }
-  } else if (os == 1) { // Windows: First non-loopback IPv4
+  } else if (currOS == 1) { // Windows: First non-loopback IPv4
     String[] lines = output.split("\n");
     for (String line : lines) {
       if (line.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
         return line;
       }
     }
-  } else if (os == 0) {
+  } else if (currOS == 0) {
     return output;
   }
   return null;
@@ -139,7 +139,7 @@ String getClipboard() {
 
     if (content != null && content.isDataFlavorSupported(DataFlavor.stringFlavor)) {
       String pastedText = (String) content.getTransferData(DataFlavor.stringFlavor);
-      return pastedText;
+      return trim(pastedText);
     }
   }
   catch (Exception e) {

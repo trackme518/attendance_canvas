@@ -9,7 +9,7 @@ Gui gui;
 
 boolean settingsVisible = true;
 
-int lastKey = -1;
+int lastKeyCode = -1;
 
 void initGUI() {
   gui = new Gui();
@@ -412,40 +412,28 @@ void pasteToField() {
 }
 
 void keyPressed() {
-  //println("code: " + (int)key);
+  println("code: " + (int)key + " previous: "+lastKeyCode);
 
-  int currOS = getOS();
-
+  //int currOS = getOS();
+  /*
   if (currOS==0) { //MACOS P2D
-    if (lastKey==(int)65535) {
-      if (key==118) {
-        pasteToField();
-        return;
-      }
-    }
-  } else if (currOS==2) { //LINUX P2D
-    if (key == CODED) {
-      //println(keyCode);
-      if (keyCode == 86 ) { //CTRL + V
-        //println("coded: " + (int)keyCode);
-        println("CTRL+V detected");
-        pasteToField();
-        return;
-      }
-    }
-  } else if (  currOS==1 ) { //WIN without P2D OpenGL (JAVA renderer - I dont have 3D acceleration on virtual machine)
-    if (key == CODED) {
-      if (keyCode == 17 ) { //CTRL + V
-        //println("coded: " + (int)keyCode);
-        println("CTRL+V detected");
-        pasteToField();
-      }
-    }
+   if (lastKey==(int)65535) {
+   if (key==118) {
+   pasteToField();
+   return;
+   }
+   }
+   }
+   */
+
+  if (key == CODED) {
+    lastKeyCode = keyCode;
+    return;
   }
 
-  lastKey = key;
-
-  if (key ==CODED) {
+  if (key == 22 && lastKeyCode== 17) { //CTRL + V keycode==86 for P2D / 17==CTRL for JAVA
+    println("CTRL+V detected");
+    pasteToField();
     return;
   }
 
@@ -453,6 +441,7 @@ void keyPressed() {
     gui.keyPressed(key);
   }
 }
+
 ///////////////////////////////////////////////////////
 
 boolean setUserData() {
