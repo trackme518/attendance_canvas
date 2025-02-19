@@ -1,6 +1,6 @@
 # QR Code Attendance Automation for Canvas Roll Call
 
-This project automates the attendance tracking system for the Canvas educational framework using a QR code-based method. 
+This project automates the attendance tracking with QR codes for the  [Canvas](https://www.instructure.com/) [Roll Call](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-use-the-Roll-Call-Attendance-tool-in-a-course/ta-p/1003). 
 
 ![Students scanning QR code to mark attendance](./images/usecase.jpg)
 
