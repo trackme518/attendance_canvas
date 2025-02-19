@@ -27,7 +27,8 @@ Once the server is running, the application generates a **QR code** that points 
 - You might need to run command `xattr -r -d com.apple.quarantine attendence` on the attendence directory to remove quarantine flag (downloaded from internet).
 
 **Windows**
-- Enable port 4430 in firewall 
+- unzip .7zip, double click .exe, choose Allow when prompted for network Access. 
+- You might need to enable port 4430 in firewall - [tutorial](https://learn.microsoft.com/en-us/sql/reporting-services/report-server/configure-a-firewall-for-report-server-access?view=sql-server-ver16)
 
 ### Screenshot of Canvas Attendance Page
 
