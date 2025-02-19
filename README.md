@@ -92,7 +92,7 @@ To further discourage cheating I am also tracking unique videoinput device id (i
 
 ## Architecture
 I am using [Java Processing](https://processing.org/) - uses Java 17, [Selenium](https://www.selenium.dev/downloads/) and [ungoogled-chromium](https://github.com/ungoogled-software/ungoogled-chromium). 
-In particular I am using Selenium 4.28.1 for Java, January 23, 2025 - that is version 133 and Ungoogled Chromium 133 (instead of Chrome for Testing - it is just easier to package thanks to AppImage on linux). If you update the chromium it likely breaks as the Selenium expects certain version of the driver to go along with it.   
+In particular I am using Selenium 4.28.1 for Java, January 23, 2025 - with Ungoogled Chromium 133 (I use Chrome for Testing for Windows64 and Unggogled Chromium on Linux and MacOS which is just easier to package). If you update the chromium it likely breaks as the Selenium expects certain version of the driver to go along with it, however both Ungoogle Chromium and Chrome for testing should not update on their own.   
 
 ## Download
 Download the latest build from Releases.  
