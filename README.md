@@ -5,7 +5,7 @@ This project automates the attendance tracking with QR codes for the  [Canvas](h
 ![Students scanning QR code to mark attendance](./images/usecase.jpg)
 
 ## Problem Background
-Canvas uses the Roll Call plugin to track attendance, but unfortunately, this plugin does not have an API. To overcome this, this Java application utilizes **Selenium** and **Ungoogled Chromium** in headless mode to interact with Canvas's Roll Call Attendance system. It interacts with the website as you would normally did (ie clicks on web elements identified via Xpath). 
+Canvas uses the Roll Call plugin to track attendance, but unfortunately, this plugin does not have an API. So before the teacher need to manually mark each student present or absent. To overcome this, this Java application utilizes **Selenium** and **Ungoogled Chromium** in headless mode to interact with Canvas's Roll Call Attendance system. It interacts with the website as you would normally did (ie clicks on web elements identified via Xpath) and let students to scan the QR themselves. In essence it outsources the need to mark attendance from teacher to students. Single teacher can forget to mark attendance or do a mistake but students are more motivated to mark themselves, plus they can remind it to each other.
 
 ## Overview of the Solution
 This Java application runs on your PC and serves an asynchronous HTTPS server using a **self-signed certificate**. The server runs on port **4430**.
@@ -42,6 +42,7 @@ Once the server is running, the application generates a **QR code** that points 
 ![Screenshot of the Java App](./images/app_screenshot.jpg)
 
 ## How to Use
+Intended use: Enter the classroom, open your PC, run the program - let students scan the QR code. Lave the program running in the background while you continue with your lesson. At the end of the lesson, close the app. 
 
 ### 1. Set Up the Application
 After launching the app, you will need to provide the following:
@@ -72,7 +73,11 @@ Students can scan the QR code using their mobile phones. The web page will allow
 
 ### 6. Marking Attendance
 Once the students have entered their name, they can scan the QR code again, and the app will automatically mark them as present - the grey circle next to their name will turn green. 
-If the they scan QR code 15+ minutes later after the app was started it will mark them as late, later than 60+ minutes as absent.  
+
+#### Late attendance
+
+* If the student scan QR code 15+ minutes later after the app was started it will mark them as late, later than 60+ minutes as absent. The timeout periods can be set manually inside data.json once you save your credentials inside the data folder of the App (default 15min late, 60 min absence).
+* After 60 minutes that the program was running it will automatically mark absence to all students that did not mark themselves as present (you can simply close the program to prevent this).
 
 ### 7. Progressive Web App (PWA)
 Students can save the web page as a Progressive Web App (PWA) to their phone's homepage for easier access. This way, they can quickly mark themselves present every time.
