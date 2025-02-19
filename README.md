@@ -50,7 +50,7 @@ After launching the app, you will need to provide the following:
 These can be entered directly into the app as shown in the screenshot above. Then let the app load and show your students the QR code - they can scan it with their phone. 
 
 ### 2. Save the Credentials
-Once you have entered the necessary information (URL, username, and password), click **Save**. The app will remember these settings for the future. 
+Once you have entered the necessary information (URL, username, and password), click **Save**. You can copy-paste your data with CTRL+V. The app will remember these settings for the future. 
 
 - **Note**: You will need to log in only once. The next time you start the app, it will automatically load the credentials and log you in.
 
