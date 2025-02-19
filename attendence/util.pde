@@ -60,7 +60,9 @@ String getIPAddress() {
     command = "ip route get 8.8.8.8";
     break;
   case 1:  // Windows
-    command = "powershell -Command \"((Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notmatch 'Loopback' }).IPAddress)[0]\"";
+    command = "ping -4 -n 1 %ComputerName%";
+    //command = "@ECHO OFF && for /f 'delims=[] tokens=2' %a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do (echo %a )";
+    //command = "powershell -Command \"((Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notmatch 'Loopback' }).IPAddress)[0]\"";
     break;
   default:
     return null;
@@ -96,7 +98,9 @@ String executeCommand(String command) {
       output.append(line).append("\n");
     }
     reader.close();
+
     //println(output.toString());
+
     return output.toString().trim();
   }
   catch (Exception e) {
@@ -119,12 +123,20 @@ String parseIPAddress(String output) {
       }
     }
   } else if (currOS == 1) { // Windows: First non-loopback IPv4
-    String[] lines = output.split("\n");
-    for (String line : lines) {
-      if (line.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
-        return line;
+    String[] m = match(output, "\\d+\\.\\d+\\.\\d+\\.\\d+");
+    if (m!=null) {
+      if (m.length>0) {
+        return m[0];
       }
     }
+    /*
+    String[] lines = output.split("\n");
+     for (String line : lines) {
+     if (line.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+     return line;
+     }
+     }
+     */
   } else if (currOS == 0) {
     return output;
   }

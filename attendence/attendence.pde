@@ -213,35 +213,38 @@ void startBrowser() {
     }
   }
 
-  String browser_build_dir = "";
+  //String browser_build_dir = "";
+  String chromedriver_path = "";
   String chrome_binary_path = "";
 
   if (currOS==0) { //MACOS
     String arch = System.getProperty("os.arch");
     if (arch.contains("aarch64") || arch.contains("arm64")) {
       println("Running on MACOS Apple Silicon (ARM64)");
-      browser_build_dir = dataPath("chromedriver"+File.separator+"macos_silicon");
-      chrome_binary_path = browser_build_dir+File.separator+"Chromium.app";
+      String browser_build_dir = dataPath("chromedriver"+File.separator+"macos_silicon");
+      chrome_binary_path = browser_build_dir+File.separator+"Chromium.app";  //Ungoogled Chromium
+      chromedriver_path = browser_build_dir+File.separator+"chromedriver";
       //chrome_binary_path = "/Applications"+File.separator+"Chromium.app";
     } else {
       println("Running on MACOS Intel (x86_64)");
-      browser_build_dir = dataPath("chromedriver"+File.separator+"macos_intel");
+      String browser_build_dir = dataPath("chromedriver"+File.separator+"macos_intel");
     }
   } else if (currOS == 1) { //WIN
     println("Running on WINDOWS");
-    browser_build_dir = dataPath("chromedriver"+File.separator+"win64");
-    chrome_binary_path = browser_build_dir+File.separator+"chrome.exe";
+    String browser_build_dir = dataPath("chromedriver"+File.separator+"win64");
+    chrome_binary_path = browser_build_dir+File.separator+"chrome-win64"+File.separator+"chrome.exe"; //unzipped Chrome for Testing
+    chromedriver_path = browser_build_dir+File.separator+"chromedriver.exe";
   } else if (currOS == 2) { //Linux
     println("Running on  LINUX");
-    browser_build_dir = dataPath("chromedriver"+File.separator+"linux64");
-    chrome_binary_path = browser_build_dir+File.separator+"chrome.AppImage";
+    String browser_build_dir = dataPath("chromedriver"+File.separator+"linux64");
+    chrome_binary_path = browser_build_dir+File.separator+"chrome.AppImage"; //Ungoogled Chromium
+    chromedriver_path = browser_build_dir+File.separator+"chromedriver";
   }
 
   if (instance!=null) {
     instance.close();
   }
 
-  String chromedriver_path = browser_build_dir+File.separator+"chromedriver";
   println("starting browser; driver: "+chromedriver_path+" binary: "+chrome_binary_path);
   instance = new BrowserInstance( chromedriver_path, chrome_binary_path );
   instance.doTask(instance.LOGIN);
