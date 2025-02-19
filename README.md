@@ -2,6 +2,8 @@
 
 This project automates the attendance tracking system for the Canvas educational framework using a QR code-based method. 
 
+![Students scanning QR code to mark attendance](./images/usecase.jpg)
+
 ## Problem Background
 Canvas uses the Roll Call plugin to track attendance, but unfortunately, this plugin does not have an API. To overcome this, this Java application utilizes **Selenium** and **Ungoogled Chromium** in headless mode to interact with Canvas's Roll Call Attendance system. It interacts with the website as you would normally did (ie clicks on web elements identified via Xpath). 
 
