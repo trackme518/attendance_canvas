@@ -416,20 +416,29 @@ void keyPressed() {
 
   int currOS = getOS();
 
-  if (currOS==0) { //MACOS
+  if (currOS==0) { //MACOS P2D
     if (lastKey==(int)65535) {
       if (key==118) {
         pasteToField();
         return;
       }
     }
-  } else if (currOS==2 || currOS==1) { //LINUX OR WIN
+  } else if (currOS==2) { //LINUX P2D
     if (key == CODED) {
+      //println(keyCode);
       if (keyCode == 86 ) { //CTRL + V
-        println("coded: " + (int)keyCode);
+        //println("coded: " + (int)keyCode);
         println("CTRL+V detected");
         pasteToField();
         return;
+      }
+    }
+  } else if (  currOS==1 ) { //WIN without P2D OpenGL (JAVA renderer - I dont have 3D acceleration on virtual machine)
+    if (key == CODED) {
+      if (keyCode == 17 ) { //CTRL + V
+        //println("coded: " + (int)keyCode);
+        println("CTRL+V detected");
+        pasteToField();
       }
     }
   }
@@ -501,7 +510,7 @@ boolean loadFromJson() {
     pass = decrypter( json.getString("password"), cryptoPass) ;
     weburl = json.getString("weburl");
 
-    timeoutForAttendance = json.getInt("timeoutForAttendance"); 
+    timeoutForAttendance = json.getInt("timeoutForAttendance");
     timeoutForLateAttendance = json.getInt("timeoutForLateAttendance");
 
     return true;

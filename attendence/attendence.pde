@@ -35,7 +35,7 @@ boolean presenceLate = false;
 /////////////////////////////////////////////////////
 
 void setup() {
-  size(1280, 720, P2D);
+  size(1280, 720);
   windowTitle("Canvas Attendence");
   windowResizable(true);
   windowMove(60, 60);
@@ -227,6 +227,7 @@ void startBrowser() {
   } else if (currOS == 1) { //WIN
     println("Running on WINDOWS");
     browser_build_dir = dataPath("chromedriver"+File.separator+"win64");
+    chrome_binary_path = browser_build_dir+File.separator+"chrome.exe";
   } else if (currOS == 2) { //Linux
     println("Running on  LINUX");
     browser_build_dir = dataPath("chromedriver"+File.separator+"linux64");
@@ -238,7 +239,7 @@ void startBrowser() {
   }
 
   String chromedriver_path = browser_build_dir+File.separator+"chromedriver";
-
+  println("starting browser; driver: "+chromedriver_path+" binary: "+chrome_binary_path);
   instance = new BrowserInstance( chromedriver_path, chrome_binary_path );
   instance.doTask(instance.LOGIN);
   instance.doTask(instance.GETSTUDENTS);
