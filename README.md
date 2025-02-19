@@ -17,9 +17,10 @@ Once the server is running, the application generates a **QR code** that points 
 - **Canvas Attendance URL**: The URL of the page with the Roll Call attendance feature for your class.
 
 ### Installation ###
-[Download latest release](https://github.com/trackme518/attendence_canvas/releases/latest). Unzip it with 7zip( you can install 7zip from [source](https://www.7-zip.org/download.html), or on Ubuntu: `sudo apt install p7zip-full p7zip-rar` ), the App is packaged with all binaries so no further installation is needed, all dependencies are included.
+[Download latest release](https://github.com/trackme518/attendence_canvas/releases/latest). Unzip it. the App is packaged with all binaries so no further installation is needed, all dependencies are included.
 
 **Linux**
+- In case you need to install 7zip -> from [source](https://www.7-zip.org/download.html), or on Ubuntu: `sudo apt install p7zip-full p7zip-rar`
 - Enable 4430 port in your firewall. In terminal run `sudo ufw allow 4430/tcp`
 - Mark executable `chrome.AppImage` and `chromedriver` in `attendence/data/chromedriver/linux64/` - on Ubuntu you can right-click->Properties->Executable as Program or in terminal `chmod a+x chrome.AppImage`
 - On Ubuntu, to use the .AppImage you may need to install `sudo apt install libfuse2` (can coexist with libfuse3)
