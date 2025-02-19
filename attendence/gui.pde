@@ -475,6 +475,11 @@ void saveToJson() {
   json.setString("username", user);
   json.setString("password", encrypter( pass, cryptoPass ) );
   json.setString("weburl", weburl);
+
+  json.setInt("timeoutForAttendance", timeoutForAttendance); //save in minutes
+  json.setInt("timeoutForLateAttendance", timeoutForLateAttendance); //save in minutes
+
+
   // Save the JSONObject as a file
   saveJSONObject(json, dataPath("data.json") );
   println("Data saved to " + dataPath("data.json"));
@@ -495,6 +500,10 @@ boolean loadFromJson() {
     user = json.getString("username");
     pass = decrypter( json.getString("password"), cryptoPass) ;
     weburl = json.getString("weburl");
+
+    timeoutForAttendance = json.getInt("timeoutForAttendance"); 
+    timeoutForLateAttendance = json.getInt("timeoutForLateAttendance");
+
     return true;
   }
   catch (Exception e) {

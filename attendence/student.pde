@@ -69,7 +69,17 @@ class Student {
     popStyle();
   }
 
+  void markAbsentWhenUnmark() {
+    if ( present.equals("unmark") ) {
+      markStudent("absent");
+    }
+  }
+
   void markStudent(String state) {
+    if ( state.equals(present) ) {
+      println("state for student already set");
+      return;
+    }
     //avoid multiple triggers
     if (millis()-debounceMark<1000) {
       return;
@@ -87,11 +97,11 @@ class Student {
   void markStudent() {
     String state = "present";
 
-    if (millis()>1000*60*15) {
+    if (presenceLate) { //global var set in draw
       state = "late";
     }
 
-    if (millis()>1000*60*60) {
+    if (presenceClosed) { //global var set in draw
       state = "absent";
     }
 

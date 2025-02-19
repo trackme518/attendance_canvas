@@ -28,6 +28,10 @@ boolean userdataloaded = false;
 boolean linkOpened = false;
 //PImage cursor_hand;
 //PImage cursor;
+int timeoutForAttendance = 60; //1 hour timeout
+int timeoutForLateAttendance = 15;
+boolean presenceClosed = false;
+boolean presenceLate = false;
 /////////////////////////////////////////////////////
 
 void setup() {
@@ -67,6 +71,32 @@ void windowResized() {
 void draw() {
   background(0);
   heartBeat.pulse();
+
+  if (!presenceLate && millis() > (timeoutForLateAttendance*60*1000) ) {
+    presenceLate = true;
+  }
+
+  if (!presenceClosed && millis() > (timeoutForAttendance*60*1000) ) {
+    for (int i=0; i< students.size(); i++) {
+      students.get(i).markAbsentWhenUnmark();
+    }
+    presenceClosed = true;
+  }
+
+  String minutes = str( millis()/1000/60 ) ;
+
+  pushStyle();
+  if (presenceClosed) {
+    fill(255, 0, 0);
+    text("Closed "+minutes + " minutes", 300, 50);
+  } else if (presenceLate) {
+    fill(255, 0, 0);
+    text("Late "+minutes+ " minutes / "+timeoutForAttendance, 300, 50);
+  } else {
+    fill(0, 255, 0);
+    text("Open "+minutes+ " minutes / "+timeoutForLateAttendance, 300, 50);
+  }
+  popStyle();
 
   if (instance!=null) {
     instance.execute(); //call continously - execute commands in que one by one on separate thread
@@ -111,7 +141,7 @@ void draw() {
     fill(255);
     text(serverIp, 100, 50);
     popStyle();
-    
+
     if (mouseX > 100 && mouseX < 100 + 150 && mouseY > 30 && mouseY < 30 + 30) {
       cursor(HAND);
       if (mousePressed && !linkOpened) {
@@ -126,8 +156,6 @@ void draw() {
         cursor(ARROW);
       }
     }
-
-    
   }
 
   if (students!=null) {
